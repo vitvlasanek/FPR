@@ -18,5 +18,5 @@ toText num list = krok num list []  where
 toText' :: String->[(Char, String)]->String
 toText' n l = krok n []  where 
     krok [] z = [(fromList (map (swap) l) ! z)]
-    krok (x:xs) z                   | member z (fromList (map (swap) l)) = (fromList (map (swap) l) ! z) : krok (x:xs) []
-                                    | otherwise = krok xs (z ++ [x])
+    krok (x:xs) z   | member z (fromList (map (swap) l)) = (fromList (map (swap) l) ! z) : krok (x:xs) []
+                    | otherwise = krok xs (z ++ [x])
