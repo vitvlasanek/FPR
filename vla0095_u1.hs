@@ -20,3 +20,10 @@ toText' n l = krok n []  where
     krok [] z = [(fromList (map (swap) l) ! z)]
     krok (x:xs) z   | member z (fromList (map (swap) l)) = (fromList (map (swap) l) ! z) : krok (x:xs) []
                     | otherwise = krok xs (z ++ [x])
+
+-- doplňkový ukol Varianta C
+split :: String->[(Char, String)]->String
+split n l = krok n []  where
+    krok [] z = z
+    krok (x:xs) z                   | member z (fromList (map (swap) l)) = z ++ [' '] ++ krok (x:xs) []
+                                    | otherwise = krok xs (z ++ [x])
