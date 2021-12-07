@@ -90,14 +90,14 @@ isPa x  | length (nub x) <= 4 = True
 --vyhodnocovací pořadí + High card
 decide :: Hand -> Category 
 decide x    | isRf (sortList x) && flush x = RoyalFlush
-            | isSt (sortList x) && flush x = StraightFlush
-            | isFo (sortList x) = Four
-            | isFh (sortList x) = FullHouse
+            | isSt (mkList x) && flush x = StraightFlush
+            | isFo (mkList x) = Four
+            | isFh (mkList x) = FullHouse
             | flush x = Flush
             | isSt (sortList x) = Straight
-            | isTh (sortList x) = Three
-            | isTp (sortList x) = TwoPair
-            | isPa (sortList x) = Pair
+            | isTh (mkList x) = Three
+            | isTp (mkList x) = TwoPair
+            | isPa (mkList x) = Pair
             | otherwise = HighCard
 
 -- Prelude> decide [Card (Numeric 2) Hearts,Card (Numeric 2) Clubs,Card Ace Hearts,Card Ace Clubs,Card King Spades]
