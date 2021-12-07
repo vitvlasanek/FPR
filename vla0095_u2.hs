@@ -24,9 +24,13 @@ valueOf Jack = 11
 valueOf (Numeric x) = x
 
 --seřazení karet sestupně
-mkList :: Hand -> [Int]
+sortList :: Hand -> [Int]
+sortList [] = []
+sortList x = sort (mkList x)
+
+mkList :: [Card] -> [Int]
+mkList (Card r _ : cs) =  valueOf r : sortList cs
 mkList [] = []
-mkList (Card r _ : cs) = mkList cs ++ [valueOf r]
 
 --Royal Flush – královská postupka (10, J, Q, K, A v jedné barvě)
     --pomocí Straight + head == 14 + barvy
@@ -84,15 +88,15 @@ isPa x  | length (nub x) <= 4 = True
 
 --vyhodnocovací pořadí + ošetření High card
 decide :: Hand -> Category 
-decide x    | isRf (mkList x) && flush x = RoyalFlush
-            | isSt (mkList x) && flush x = StraightFlush
-            | isFo (mkList x) = Four
-            | isFh (mkList x) = FullHouse
+decide x    | isRf (sortList x) && flush x = RoyalFlush
+            | isSt (sortList x) && flush x = StraightFlush
+            | isFo (sortList x) = Four
+            | isFh (sortList x) = FullHouse
             | flush x = Flush
-            | isSt (mkList x) = Straight
-            | isTh (mkList x) = Three
-            | isTp (mkList x) = TwoPair
-            | isPa (mkList x) = Pair
+            | isSt (sortList x) = Straight
+            | isTh (sortList x) = Three
+            | isTp (sortList x) = TwoPair
+            | isPa (sortList x) = Pair
             | otherwise = HighCard
 
 -- Prelude> decide [Card (Numeric 2) Hearts,Card (Numeric 2) Clubs,Card Ace Hearts,Card Ace Clubs,Card King Spades]
