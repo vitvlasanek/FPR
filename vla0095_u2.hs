@@ -1,4 +1,4 @@
-import Data.List (sort, nub, init, tail, take, drop)
+import Data.List (sort, nub, take, drop)
 
 data Suit = Hearts | Clubs | Diamonds | Spades deriving (Eq, Show)
 data Rank = Numeric Int | Jack | Queen | King | Ace deriving (Eq, Show)
@@ -26,10 +26,10 @@ valueOf (Numeric x) = x
 --seřazení karet sestupně
 sortList :: Hand -> [Int]
 sortList [] = []
-sortList x = sort (mkList x)
+sortList x = reverse (sort (mkList x))
 
 mkList :: [Card] -> [Int]
-mkList (Card r _ : cs) =  valueOf r : sortList cs
+mkList (Card r _ : cs) =  valueOf r : mkList cs
 mkList [] = []
 
 --Royal Flush – královská postupka (10, J, Q, K, A v jedné barvě)
@@ -44,8 +44,8 @@ isRf (x:xs) | isSt (x:xs) && x == 14= True
 
 --Four of a kind – čtveřice stejné hodnoty (někdy také „Poker“)
 isFo :: [Int] -> Bool
-isFo x  | length(nub (init x)) == 1 = True
-        | length(nub (tail x)) == 1 = True
+isFo x  | length(nub (take 4 x)) == 1 = True
+        | length(nub (drop 1 x)) == 1 = True
         | otherwise = False 
 
 --Full house – trojice a dvojice stejných hodnot
@@ -68,6 +68,7 @@ isSt (x:y:rest) | x == (y+1) = isSt (y:rest)
                 | x == 14 && y == 5 = isSt (y:rest)
                 | otherwise = False
 
+--Three of a kind – trojice stejné hodnoty
 isTh :: [Int] -> Bool
 isTh x  | length(nub (take 3 x)) == 1 = True
         | length(nub (drop 2 x)) == 1 = True
@@ -86,7 +87,7 @@ isPa x  | length (nub x) <= 4 = True
 --High card – vysoká karta (karta nejvyšší hodnoty)
     --v decide.otherwise
 
---vyhodnocovací pořadí + ošetření High card
+--vyhodnocovací pořadí + High card
 decide :: Hand -> Category 
 decide x    | isRf (sortList x) && flush x = RoyalFlush
             | isSt (sortList x) && flush x = StraightFlush
