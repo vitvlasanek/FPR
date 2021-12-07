@@ -90,7 +90,7 @@ isPa x  | length (nub x) <= 4 = True
 --vyhodnocovací pořadí + High card
 decide :: Hand -> Category 
 decide x    | isRf (sortList x) && flush x = RoyalFlush
-            | isSt (mkList x) && flush x = StraightFlush
+            | isSt (sortList x) && flush x = StraightFlush
             | isFo (mkList x) = Four
             | isFh (mkList x) = FullHouse
             | flush x = Flush
