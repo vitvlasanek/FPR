@@ -1,4 +1,5 @@
 import Data.List (sort, nub, take, drop)
+import Data.Functor.Reverse (Reverse)
 
 data Suit = Hearts | Clubs | Diamonds | Spades deriving (Eq, Show)
 data Rank = Numeric Int | Jack | Queen | King | Ace deriving (Eq, Show)
@@ -23,14 +24,21 @@ valueOf Queen = 12
 valueOf Jack = 11
 valueOf (Numeric x) = x
 
+--vytvoření listu hodnot karet
+mkList :: Hand -> [Int]
+mkList [] = []
+mkList (Card r _ : cs) =  valueOf r : mkList cs
+
 --seřazení karet sestupně
 sortList :: Hand -> [Int]
 sortList [] = []
-sortList x = reverse (sort (mkList x))
+sortList x = sort (mkList x)
 
-mkList :: [Card] -> [Int]
-mkList (Card r _ : cs) =  valueOf r : mkList cs
-mkList [] = []
+--otočení lisu
+revList :: Hand -> [Int]
+revList [] = []
+revList x = reverse (sort (mkList x))
+
 
 --Royal Flush – královská postupka (10, J, Q, K, A v jedné barvě)
     --pomocí Straight + head == 14 + barvy
@@ -89,13 +97,13 @@ isPa x  | length (nub x) <= 4 = True
 
 --vyhodnocovací pořadí + High card
 decide :: Hand -> Category 
-decide x    | isRf (sortList x) && flush x = RoyalFlush
-            | isSt (sortList x) && flush x = StraightFlush
-            | isFo (mkList x) = Four
+decide x    | isRf (revList x) && flush x = RoyalFlush
+            | isSt (revList x) && flush x = StraightFlush
+            | isFo (sortList x) = Four
             | isFh (mkList x) = FullHouse
             | flush x = Flush
-            | isSt (sortList x) = Straight
-            | isTh (mkList x) = Three
+            | isSt (revList x) = Straight
+            | isTh (sortList x) = Three
             | isTp (mkList x) = TwoPair
             | isPa (mkList x) = Pair
             | otherwise = HighCard
