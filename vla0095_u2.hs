@@ -116,3 +116,8 @@ decide x    | isRf (revList x) && flush x = RoyalFlush
 -- Straight
 -- Prelude> decide [Card (Numeric 2) Hearts,Card (Numeric 5) Clubs,Card Ace Hearts,Card King Clubs,Card Jack Spades]
 -- HighCard
+
+countOcurrences :: Hand -> Card -> Int
+countOcurrences [] (Card r1 s1) = 0
+countOcurrences (Card r s : cs) (Card r1 s1)    | valueOf r1 == valueOf r && s == s1 = 1 + countOcurrences cs (Card r1 s1)
+                                                | otherwise = countOcurrences cs (Card r1 s1)
